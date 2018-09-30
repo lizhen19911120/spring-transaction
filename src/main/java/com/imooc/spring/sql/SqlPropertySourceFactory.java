@@ -11,6 +11,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * 用来解析数据表account.sql文件中的sql语句用于初始化/批量操作数据库
+ * 读取文件的每一行，作如下处理：
+ * "--"开头，跳过这一样，不做处理；
+ * "!--"开头，将这一行内容做为Pair的key，新建一个Pair；
+ * 其他行如果不为空，则将每一行内容放入Deque<Pair>最后一个Pair对象的lines属性中；
+ *
+ * 最后将Deque<Pair>中的内容转为Map<String, Object>,存放为键值对（key-lines拼接为一条字符串）,放入MapPropertySource中
  * Created by lizhen on 2018/9/14.
  */
 public class SqlPropertySourceFactory implements PropertySourceFactory {

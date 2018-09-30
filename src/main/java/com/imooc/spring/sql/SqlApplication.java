@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
@@ -15,16 +14,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * Created by lizhen on 2018/9/14.
  */
 @SpringBootApplication
-//@ContextConfiguration(locations = "classpath:applicationContext.xml")
+//@ContextConfiguration(locations = "classpath:applicationContext.xml")不能使用，用@ImportResource
 @ImportResource("classpath:applicationContext.xml")
 @PropertySource(value = "classpath:数据表account.sql", factory = SqlPropertySourceFactory.class)
-public class SqlApplication implements EnvironmentAware {
+public class SqlApplication{
 
+    @Autowired
     private Environment env;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    /**
+     * 获取的@PropertySource中放入的文件内容键值对
+     */
     @Value("${create_table_account}")
     private String createAccount;
 
@@ -43,6 +46,17 @@ public class SqlApplication implements EnvironmentAware {
     @Value("${insert_table_book_stock}")
     private String insertBookStock;
 
+    /**
+     * 获取其他bean中的属性值
+     */
+    @Value("#{test.name}")
+    private String name;
+
+    @Bean
+    public Test test(){
+        return new Test();
+    }
+
     //为了使用非静态方法env.getProperty()等，构建一个bean方法
     @Bean
     public String initSqlBean() {
@@ -50,14 +64,15 @@ public class SqlApplication implements EnvironmentAware {
         System.out.println("SQL_1:" + env.getProperty("create_table_account"));
         //可以用@Value读取
         System.out.println("SQL_2:" + insertAccount);
+        System.out.println("test.name:"+name);
         //执行数据库DDL操作，创建表
 //        jdbcTemplate.execute(createAccount);
 //        jdbcTemplate.execute(createBook);
 //        jdbcTemplate.execute(createBookStock);
 
-        String[] insertStr = insertAccount.split(";");
+//        String[] insertStr = insertAccount.split(";");
         //执行数据库DML操作，插入数据
-        jdbcTemplate.batchUpdate(insertStr);
+//        jdbcTemplate.batchUpdate(insertStr);
 //        String[] insertStr1 = insertBook.split(";");
 //        jdbcTemplate.batchUpdate(insertStr1);
 //        String[] insertStr2 = insertBookStock.split(";");
@@ -71,8 +86,4 @@ public class SqlApplication implements EnvironmentAware {
 
     }
 
-    @Override
-    public void setEnvironment(Environment environment) {
-        env = environment;
-    }
 }

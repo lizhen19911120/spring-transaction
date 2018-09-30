@@ -63,3 +63,7 @@
 * 所有的jar包都在lib文件夹下
 * 所有文件编码格式统一为UTF-8
 * 视频地址：http://www.imooc.com/learn/478
+
+### 另外研究连接mongo数据库、properties文件读取、前后端通信、指定profile启动、批量数据库操作的类和文件，与本项目主题无关
+mongo.properties/数据表account.sql/MongoConfig/MongoResource/TestDomain/MyJavaTimeModule/SqlApplication
+/SqlPropertySourceFactory/Test
