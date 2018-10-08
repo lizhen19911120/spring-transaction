@@ -63,3 +63,6 @@
 * 所有的jar包都在lib文件夹下
 * 所有文件编码格式统一为UTF-8
 * 视频地址：http://www.imooc.com/learn/478
+
+### 另外研究连接mongo数据库的类，与本项目主题无关
+mongo.properties/MongoConfig/MongoResource/TestDomain/MyJavaTimeModule
