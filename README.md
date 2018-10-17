@@ -10,7 +10,7 @@
  1. A账户扣钱
  2. B账户加钱
 
-既然是 事务管理 ，那么测试的方法就是在第1步（outMoney(A, 100)）之后发生异常。
+既然是 事务管理 ，那么测试的方法就是在第1步（outMoney(test.A, 100)）之后发生异常。
 如果A账户的钱减少了，就说明事务管理没有生效（因为没有回滚（rollback）），反之则有效。
 
 ### demo1中的示例：使用事务管理模板（TransactionTemplate）来执行事务
@@ -64,6 +64,6 @@
 * 所有文件编码格式统一为UTF-8
 * 视频地址：http://www.imooc.com/learn/478
 
-### 另外研究连接mongo数据库、properties文件读取、前后端通信、指定profile启动、批量数据库操作的类和文件，与本项目主题无关
-mongo.properties/数据表account.sql/MongoConfig/MongoResource/TestDomain/MyJavaTimeModule/SqlApplication
-/SqlPropertySourceFactory/Test
+### 另外研究连接mongo数据库、properties文件读取、前后端参数/结果通信、自定义前端参数接收器、指定profile启动、批量数据库操作的类和文件，与本项目主题无关
+mongo.properties/数据表account.sql/MongoConfig/MongoResource/TestDomain/Dept/Employee/FormObj/FormObjArgumentResolver/MyJavaTimeModule/SqlApplication
+/SqlPropertySourceFactory/test.Test

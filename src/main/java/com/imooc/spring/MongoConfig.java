@@ -7,12 +7,8 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.mongodb.MongoClientURI;
 import org.apache.catalina.connector.Connector;
 import org.slf4j.Logger;
@@ -28,29 +24,34 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.rmi.UnknownHostException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
+import java.util.List;
 
 /**
  * Created by lizhen on 2018/9/21.
  */
-//@SpringBootApplication(scanBasePackages = {"com.imooc.spring"})
+@SpringBootApplication(scanBasePackages = {"com.imooc.spring"})
+//@EnableWebMvc
 //@Configuration
 @PropertySource(value = "classpath:mongo.properties",ignoreResourceNotFound = true)
-public class MongoConfig {
+/**
+ * 实现WebMvcConfigurer来定义Spring MVC的运行环境，比如这里实现addArgumentResolvers()方法增加自定义的参数接收处理器
+ */
+public class MongoConfig implements WebMvcConfigurer {
 
  @Value("${mongo.database}")
  private String databaseName;
@@ -184,7 +185,7 @@ public class MongoConfig {
   return "success";
  }
 
- @Bean
+// @Bean
  public String test1(@Qualifier("mapperObject") ObjectMapper objectMapper){
   TestDomain testDomain = mongoTemplate.findById("5bad90cecd1d551a00f221b3",TestDomain.class,"cm_testDomain");
   System.out.println("testDomain.getCmamCreateTime: "+testDomain.getCmamCreateTime());
@@ -208,7 +209,11 @@ public class MongoConfig {
   return "success";
  }
 
-
+ @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+  // 注册FormObjArgumentResolver的参数分解器
+  argumentResolvers.add(new FormObjArgumentResolver());
+ }
 
  protected static Logger logger= LoggerFactory.getLogger(MongoConfig.class);
 
@@ -216,6 +221,7 @@ public class MongoConfig {
   ApplicationContext context = new SpringApplicationBuilder(MongoConfig.class)
           .run(args);
   logger.info("SpringBoot Start Success");
+  System.out.println(context.getBean(PropertySourcesPlaceholderConfigurer.class));
 
 //  TestDomain testDomain = ((MongoTemplate)context.getBean("mongoTemplate")).findById("5baa080ecd1d551ee87baa80",TestDomain.class,"cm_testDomain");
 //  System.out.println("testDomain.getCmamCreateTime: "+testDomain.getCmamCreateTime());
