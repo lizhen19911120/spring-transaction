@@ -51,4 +51,9 @@ public class SpringTransitionTest {
     public void testTransactionPropagation(){
         cashier.checkout("aaa", Arrays.asList("1", "2","3"));
     }
+
+    @Test
+    public void testCallFunAndPro(){
+        bookShopDao.callFunAndPro();
+    }
 }

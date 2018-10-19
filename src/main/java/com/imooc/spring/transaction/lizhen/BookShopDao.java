@@ -10,4 +10,7 @@ public interface BookShopDao {
     void updateBookStock(String isbn);
     // 更新用户的账户余额：account的money-price
     void updateUserAccount(String username, double price);
+
+    // 调数据库函数和存储过程
+    void callFunAndPro();
 }
