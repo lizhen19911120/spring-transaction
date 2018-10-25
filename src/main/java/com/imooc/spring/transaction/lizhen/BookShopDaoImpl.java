@@ -113,6 +113,9 @@ public class BookShopDaoImpl implements BookShopDao {
             cs.registerOutParameter(2, 4);
             cs.setInt("incr_param", 9);
             return cs;
+            /**
+             * 泛型lambda表达式
+             */
         }, (CallableStatementCallback<Map<String, Object>>) cs -> {
             Map<String, Object>  resultsMap = new HashMap<>();
             cs.execute();
