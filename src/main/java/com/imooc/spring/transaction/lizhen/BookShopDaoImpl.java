@@ -33,7 +33,7 @@ public class BookShopDaoImpl implements BookShopDao {
      * @param isbn 书本编号
      */
     @Override
-    public void updateBookStock(String isbn) {
+    public void updateBookStock(String isbn) throws BookStockException {
         //检查书的库存是否足够，若不够，则抛出异常
         String sql2 = "SELECT stock FROM book_stock WHERE isbn = ?";
         int stock = jdbcTemplate.queryForObject(sql2, Integer.class, isbn);
@@ -50,7 +50,7 @@ public class BookShopDaoImpl implements BookShopDao {
      * @param price 书本价格
      */
     @Override
-    public void updateUserAccount(String username, double price) {
+    public void updateUserAccount(String username, double price) throws UserAccountException {
         //检查余额是否不足，若不足，则抛出异常
         String sql2 = "SELECT money FROM account WHERE name = ?";
         double balance = jdbcTemplate.queryForObject(sql2, Double.class, username);

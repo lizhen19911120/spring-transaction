@@ -31,7 +31,9 @@ public class BookShopServiceImpl implements BookShopService {
      * @param isbn 书本编号
      */
     @Transactional(
-            //这里传播行为是REQUIRES_NEW，意味着结账时对每一本书结账的事务是内层事务，而对一个客户的所有书结账时外层事务，内层的事务不应该影响外层事务。——现实这样也是合理的
+            //这里传播行为是REQUIRES_NEW，意味着结账时对每一本书结账的事务是内层事务，而对一个客户的所有书结账时外层事务，内层的事务不应该影响外层事务。——现实这样也是合理的（理解为外层事务到内层事务后，内层事务每执行成功一次就commit，内外层事务互不影响）
+            //如果改为NESTED，则会回滚外层事务。（理解为外层事务到内层事务之前由个savePoint，只要内层事务回滚则会导致外层事务回滚到savepoint，所有事务的提交只有一个commit）
+            //如果改为REQUIRED,表现和NESTED一样。这样的话就只有一个外层事务，所以也只有一个commit
             propagation= Propagation.REQUIRES_NEW,
             isolation= Isolation.READ_COMMITTED,
             transactionManager = "transactionManager",
@@ -51,9 +53,14 @@ public class BookShopServiceImpl implements BookShopService {
             //3.更新用户余额
             bookShopDao.updateUserAccount(username, price);
             //4.针对可能抛出的BookStockException捕获提示，不能影响后续图书的结账事务
-        }
-        catch (BookStockException e){
+        } catch (BookStockException e){
             System.out.format("所购图书中编号为：%s的图书没货了\r\n",isbn);
         }
+        /**
+         * 这里不能捕获余额不足的异常，不然执行事务应余额不足时不会对已经扣除的库存进行回滚
+         */
+//        catch (UserAccountException e){
+//            System.out.format("顾客%s余额不足了\r\n",username);
+//        }
     }
 }

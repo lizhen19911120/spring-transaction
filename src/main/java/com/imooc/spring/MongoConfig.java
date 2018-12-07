@@ -7,8 +7,12 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.mongodb.MongoClientURI;
 import org.apache.catalina.connector.Connector;
 import org.slf4j.Logger;
@@ -24,20 +28,19 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.rmi.UnknownHostException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -125,11 +128,11 @@ public class MongoConfig implements WebMvcConfigurer {
 //  om.findAndRegisterModules();
   JavaTimeModule javaTimeModule = new JavaTimeModule();
   javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//  javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//  javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
+  javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+  javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
   javaTimeModule.addDeserializer(LocalDateTime.class,new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//  javaTimeModule.addDeserializer(LocalDate.class,new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//  javaTimeModule.addDeserializer(LocalTime.class,new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
+  javaTimeModule.addDeserializer(LocalDate.class,new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+  javaTimeModule.addDeserializer(LocalTime.class,new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
 
   /**
@@ -185,7 +188,7 @@ public class MongoConfig implements WebMvcConfigurer {
   return "success";
  }
 
-// @Bean
+ @Bean
  public String test1(@Qualifier("mapperObject") ObjectMapper objectMapper){
   TestDomain testDomain = mongoTemplate.findById("5bad90cecd1d551a00f221b3",TestDomain.class,"cm_testDomain");
   System.out.println("testDomain.getCmamCreateTime: "+testDomain.getCmamCreateTime());
@@ -197,9 +200,10 @@ public class MongoConfig implements WebMvcConfigurer {
   try {
    System.out.println(om.writeValueAsString(testDomain));
    System.out.println(objectMapper.writeValueAsString(testDomain));
-   TestDomain testDomainRe = objectMapper.readValue("{\"id\":\"5baa080ecd1d551ee87baa80\",\"cmamCreateTime\":\"2018-09-25 18:03:58\",\"cmamEra\":\"2018-09-25\",\"cmamYear\":\"2018-10-01\"}",TestDomain.class);
+   TestDomain testDomainRe = objectMapper.readValue("{\"id\":\"5baa080ecd1d551ee87baa80\",\"cmamCreateTime\":\"2018-09-25 18:03:58\",\"cmamEra\":\"2018-09-25\",\"cmamYear\":\"2018-10-01\",\"time\":\"18:10:01\"}",TestDomain.class);
    System.out.println(testDomainRe.getCmamCreateTime());
    System.out.println(testDomainRe.getCmamEra());
+   System.out.println(testDomainRe.getTime());
   } catch (JsonProcessingException e) {
    e.printStackTrace();
   } catch (IOException e) {
@@ -221,7 +225,7 @@ public class MongoConfig implements WebMvcConfigurer {
   ApplicationContext context = new SpringApplicationBuilder(MongoConfig.class)
           .run(args);
   logger.info("SpringBoot Start Success");
-  System.out.println(context.getBean(PropertySourcesPlaceholderConfigurer.class));
+//  System.out.println(context.getBean(PropertySourcesPlaceholderConfigurer.class));
 
 //  TestDomain testDomain = ((MongoTemplate)context.getBean("mongoTemplate")).findById("5baa080ecd1d551ee87baa80",TestDomain.class,"cm_testDomain");
 //  System.out.println("testDomain.getCmamCreateTime: "+testDomain.getCmamCreateTime());

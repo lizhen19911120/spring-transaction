@@ -129,7 +129,7 @@ public class MongoResource {
     /**
      * @ModelAttribute
      * 放在方法上的话，会在每个@RequestMapping注解的方法执行前执行，如果有返回值会默认放到Model中；
-     * 方在参数上的话，会联系前端的请求参数/返回的参数属性key与方法的参数/返回值
+     * 放在参数上的话，会联系前端的请求参数/返回的参数属性key与方法的参数/返回值
      *
      * 如果有@ModelAttribute注解，会使用ServletModelAttributeMethodProcessor(false)来处理，会进入
      *

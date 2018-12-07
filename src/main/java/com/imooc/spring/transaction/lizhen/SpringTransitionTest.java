@@ -43,10 +43,6 @@ public class SpringTransitionTest {
         bookShopService.purchase("aaa", "1");
     }
 
-    /**
-     * 不能直接在这里测试，根本不进入DataSourceTransactionManager的事务方法中去，只在junit中逗留
-     * 一个可能的解释是@Transactional注解需要spring容器的某些解析器进行处理，不然会被忽略。
-     */
     @Test
     public void testTransactionPropagation(){
         cashier.checkout("aaa", Arrays.asList("1", "2","3"));

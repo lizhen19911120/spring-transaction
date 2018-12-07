@@ -27,5 +27,6 @@ public class CashierImpl implements Cashier {
         for(String isbn : isbns) {
             bookShopService.purchase(username, isbn);
         }
+        throw new UserAccountException("aaa");
     }
 }

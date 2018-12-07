@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Created by lizhen on 2018/9/21.
@@ -21,6 +22,7 @@ public class TestDomain implements Serializable {
     private LocalDate cmamEra;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate cmamYear;
+    private LocalTime time;
 
     @Id
     public String getId() {
@@ -51,5 +53,13 @@ public class TestDomain implements Serializable {
 
     public void setCmamYear(LocalDate cmamYear) {
         this.cmamYear = cmamYear;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 }
