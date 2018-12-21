@@ -41,7 +41,7 @@
  2. 使用AspectJ，基于注解的方式配置
     1. 配置基本同demo3
     2. 不需要配置<aop:config>，转为使用<tx:annotation-driven>，并在其中配置transactionManager
-    3. 在需要进行事务管理的class上写上注解@Transaction，spring就会使用transactionManager来进行事务管理了
+    3. 在需要进行事务管理的class上写上注解@Transactional，spring就会使用transactionManager来进行事务管理了
 
 ### myexample中的示例：我习惯的配置方法(已删除)
  1. Demo5为测试用例

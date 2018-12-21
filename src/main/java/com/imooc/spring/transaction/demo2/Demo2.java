@@ -11,8 +11,14 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = "classpath:applicationContext2.xml")
 public class Demo2 {
 
-	@Resource(name = "transactionProxyFactoryBean")
+	/**
+	 * @Resourse 功能类似于@Autowired
+	 * 如果使用@Autowired，则直接注入AccountService，没有事务控制功能
+	 */
+//	@Autowired
+    @Resource(name = "transactionProxyFactoryBean")
 	private AccountService accountService;
+
 
 	public void setAccountService(AccountService accountService) {
 		this.accountService = accountService;
